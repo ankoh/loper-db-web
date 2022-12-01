@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package hyper.db.grpc;
+
+service HyperDatabaseService {
+  rpc ExecuteQuery (QueryParam) returns (stream QueryResult);
+}
+
+message QueryParam {
+  enum OutputFormat {
+    TEXT = 0;
+    ARROW_IPC = 3;
+  }
+  string query = 1;
+  repeated AttachedDatabase database = 2;
+  OutputFormat output_format = 3;
+  map<string, string> params = 4;
+}
+
+message AttachedDatabase {
+  string path = 1;
+  string alias = 2;
+}
+
+message QueryResult {
+  oneof result {
+    ArrowIPCDataChunk arrow_ipc_data_chunk = 5;
+  }
+}
+
+message ArrowIPCDataChunk {
+  bytes data = 10;
+}

@@ -1,0 +1,120 @@
+@media only screen and (min-width: 600px) {
+    .container {
+        position: relative;
+        display: grid;
+        grid-template-rows: 100%;
+        grid-template-columns: var(--nav_bar_width) calc(100% - var(--nav_bar_width));
+        height: 100%;
+    }
+
+    .navbar {
+        background-color: var(--nav_bar_bg);
+        box-sizing: border-box;
+        border-right: 1px solid rgba(0,0,0,.15);
+        line-height: 24px;
+        text-align: center;
+        display: grid;
+        grid-template-rows: 48px auto;
+        grid-template-columns: 100%;
+    }
+
+    .tabs {
+        display: grid;
+        grid-template-rows: repeat(var(--nav_tab_count), 40px);
+        grid-template-columns: 100%;
+    }
+
+    .logo {
+        border-bottom: 1px solid rgba(0,0,0,.15);
+        width: 100%;
+        display: grid;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .container {
+        position: relative;
+        display: grid;
+        grid-template-rows: var(--nav_bar_height) calc(100% - var(--nav_bar_height));
+        grid-template-columns: 100%;
+        height: 100%;
+    }
+
+    .navbar {
+        background-color: var(--nav_bar_bg);
+        border-bottom: 1px solid rgba(0,0,0,.15);
+        line-height: 24px;
+        line-height: 24px;
+        text-align: center;
+
+        display: grid;
+        grid-template-rows: 100%;
+        grid-template-columns: 48px auto;
+        justify-items: right;
+    }
+
+    .tabs {
+        display: grid;
+        grid-template-columns: repeat(var(--nav_tab_count), 40px);
+        grid-template-rows: 100%;
+    }
+
+    .logo {
+        border-right: 1px solid rgba(0,0,0,.15);
+        width: 100%;
+        display: grid;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+.logo > img {
+    width: 32px;
+}
+
+.tabNavbar {
+    display: block;
+}
+
+.tab {
+    position: relative;
+    font-weight: 400;
+    background-color: var(--nav_tab_bg);
+    color: var(--nav_tab_fg);
+    text-decoration: none;
+    box-sizing: border-box;
+}
+
+.tab > a {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    text-decoration: none;
+    vertical-align: middle;
+}
+
+.tab > a svg {
+    justify-self: center;
+    align-self: center;
+    margin-bottom: 3px;
+    color: var(--nav_tab_fg);
+}
+
+.tabButton {
+    color: var(--nav_tab_fg);
+    display: grid;
+    justify-content: center;
+    align-items: center;
+}
+
+.tabTextIcon {
+    font-size: 1.2rem;
+}
+
+.tab:hover,
+.tab.active {
+    background-color: var(--nav_tab_bg_active);
+    color: var(--nav_tab_fg_active);
+}

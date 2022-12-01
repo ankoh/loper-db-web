@@ -1,0 +1,23 @@
+{
+    "private": true,
+    "workspaces": [
+        "packages/*"
+    ],
+    "scripts": {
+        "install:wasmpack": "yarn workspace @ankoh/loper-db-web-shell install:wasmpack",
+        "proto": "buf generate && yarn workspace @ankoh/loper-db-proto-es build",
+        "build:shell:dev": "yarn workspace @ankoh/loper-db-web-shell build:debug",
+        "build:shell:prod": "yarn workspace @ankoh/loper-db-web-shell build:release",
+        "build:pwa:dev": "yarn workspace @ankoh/loper-db-web-app build:pwa:dev",
+        "build:pwa:prod": "yarn workspace @ankoh/loper-db-web-app build:pwa:prod",
+        "serve:pwa:dev": "yarn workspace @ankoh/loper-db-web-app start",
+        "serve:pwa:prod": "python3 -m http.server 9003 --bind 127.0.0.1 --directory ./packages/loper-db-web-app/build/pwa/prod/",
+        "lint": "yarn workspace @ankoh/loper-db-web-shell run lint",
+        "all": "yarn run proto && yarn run build:shell:prod && yarn run build:pwa:prod",
+        "postinstall": "node ./node_modules/wasm-pack/install.js"
+    },
+    "devDependencies": {
+        "badge-maker": "^3.3.1",
+        "wasm-pack": "^0.10.3"
+    }
+}

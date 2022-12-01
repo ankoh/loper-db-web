@@ -1,0 +1,5 @@
+[workspace]
+
+members = [
+    "packages/loper-db-web-shell/crate",
+]
