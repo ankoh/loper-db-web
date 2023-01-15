@@ -35,7 +35,7 @@ jobs:
       run: yarn workspace @ankoh/loper-db-node-proxy build:release
 
     - name: Build loper-db-web-app
-      run: yarn workspace @ankoh/loper-db-web-app build:pwa:prod
+      run: yarn workspace @ankoh/loper-db-web-app build:pwa:release
 
     - name: Deploy GitHub Page
       if: github.ref == 'refs/heads/main'

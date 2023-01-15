@@ -5,11 +5,11 @@
     "author": "André Kohn <andre.kohn@salesforce.com>",
     "private": true,
     "scripts": {
-        "start": "webpack serve --config webpack.pwa.dev.js",
-        "build:pwa:dev": "webpack --config webpack.pwa.dev.js",
-        "build:pwa:prod": "webpack --config webpack.pwa.prod.js",
-        "analyze:pwa:dev": "webpack --config webpack.pwa.dev.js --analyze",
-        "analyze:pwa:prod": "webpack --config webpack.pwa.prod.js --analyze",
+        "start": "webpack serve --config webpack.pwa.debug.js",
+        "build:pwa:debug": "webpack --config webpack.pwa.debug.js",
+        "build:pwa:release": "webpack --config webpack.pwa.release.js",
+        "analyze:pwa:debug": "webpack --config webpack.pwa.debug.js --analyze",
+        "analyze:pwa:release": "webpack --config webpack.pwa.release.js --analyze",
         "lint": "eslint src"
     },
     "engines": {
