@@ -11,8 +11,3 @@ plugins:
     out: ./packages/loper-db-proto-es/gen
     opt: target=ts
     path: ./node_modules/.bin/protoc-gen-connect-web
-
-  # Generate rust protobuf library
-  - name: rust
-    out: ./packages/loper-db-proto-rs/gen
-    opt: target=rs
