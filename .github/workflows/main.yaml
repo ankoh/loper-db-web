@@ -57,7 +57,7 @@ jobs:
       - name: Install node modules
         run: yarn install
 
-      - name: Build loper-db-web-proxy binary
+      - name: Build loper-db-web-proxy module
         run: yarn workspace @ankoh/loper-db-web-proxy build:release
 
 
@@ -91,14 +91,14 @@ jobs:
       - name: Install npm dependencies
         run: yarn install
 
-      - name: Generate protobuf library
+      - name: Generate protobuf files
         run: buf generate --verbose
 
-      - name: Build loper-db-proto-es library
+      - name: Build loper-db-proto-es module
         run: yarn workspace @ankoh/loper-db-proto-es build
-      - name: Build loper-db-web-shell library 
+      - name: Build loper-db-web-shell module 
         run: yarn workspace @ankoh/loper-db-web-shell build:release
-      - name: Build loper-db-web-proxy binary
+      - name: Build loper-db-web-proxy module
         run: yarn workspace @ankoh/loper-db-web-proxy build:release
       - name: Build loper-db-web-app
         run: yarn workspace @ankoh/loper-db-web-app build:pwa:release
