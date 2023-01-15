@@ -7,6 +7,8 @@ const base = configure({
         compilerOptions: {
             configFile: './tsconfig.json',
             sourceMap: true,
+            target: "ES5",
+            module: "es2020",
         },
     },
     extractCss: false,
