@@ -1,11 +1,11 @@
 {
-    "name": "@ankoh/loper-db-node-proxy",
+    "name": "@ankoh/loper-db-web-proxy",
     "version": "0.1.0",
     "description": "",
     "main": "index.node",
     "private": true,
     "scripts": {
-      "build": "cargo-cp-artifact -nc index.node -- cargo build --message-format=json-render-diagnostics -p loper-db-node-proxy",
+      "build": "cargo-cp-artifact -nc index.node -- cargo build --message-format=json-render-diagnostics -p loper-db-web-proxy",
       "build:debug": "npm run build --",
       "build:release": "npm run build -- --release",
       "install": "npm run build:release",

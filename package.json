@@ -7,7 +7,7 @@
         "install:wasmpack": "yarn workspace @ankoh/loper-db-web-shell install:wasmpack",
         "protoc": "buf generate",
         "proto": "buf generate && yarn workspace @ankoh/loper-db-proto-es build",
-        "build:proxy:release": "yarn workspace @ankoh/loper-db-node-proxy build:release",
+        "build:proxy:release": "yarn workspace @ankoh/loper-db-web-proxy build:release",
         "build:shell:debug": "yarn workspace @ankoh/loper-db-web-shell build:debug",
         "build:shell:release": "yarn workspace @ankoh/loper-db-web-shell build:release",
         "build:pwa:debug": "yarn workspace @ankoh/loper-db-web-app build:pwa:debug",

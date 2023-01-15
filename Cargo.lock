@@ -697,7 +697,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "loper-db-node-proxy"
+name = "loper-db-web-proxy"
 version = "0.1.0"
 dependencies = [
  "neon",
