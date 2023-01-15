@@ -2,4 +2,9 @@
 
 members = [
     "packages/loper-db-web-shell/crate",
+    "packages/loper-db-node-proxy",
 ]
+
+[profile.release]
+lto = true
+opt-level = "s"

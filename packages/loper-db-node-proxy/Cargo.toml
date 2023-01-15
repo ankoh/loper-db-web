@@ -1,0 +1,22 @@
+[package]
+name = "loper-db-node-proxy"
+version = "0.1.0"
+edition = "2021"
+exclude = ["index.node"]
+
+workspace = "../../"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+tonic = "^0.8.3"
+prost = "^0.11.6"
+
+[dependencies.neon]
+version = "0.10"
+default-features = false
+features = ["napi-6"]
+
+[build-dependencies]
+tonic-build = "^0.8.3"

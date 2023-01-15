@@ -28,8 +28,11 @@ jobs:
     - name: Build loper-db-proto-es library
       run: yarn workspace @ankoh/loper-db-proto-es build
 
-    - name: Build loper-db-web-shell library
+    - name: Build loper-db-web-shell library 
       run: yarn workspace @ankoh/loper-db-web-shell build:release
+
+    - name: Build loper-db-node-proxy binary
+      run: yarn workspace @ankoh/loper-db-node-proxy build:release
 
     - name: Build loper-db-web-app
       run: yarn workspace @ankoh/loper-db-web-app build:pwa:prod
