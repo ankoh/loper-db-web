@@ -9,7 +9,6 @@
       "build": "cargo-cp-artifact -nc ./dist/index.node -- cargo build --message-format=json-render-diagnostics -p loper-db-web-proxy",
       "build:debug": "npm run build --",
       "build:release": "npm run build -- --release",
-      "install": "npm run build:release",
       "test": "cargo test"
     },
     "dependencies": {
@@ -29,7 +28,7 @@
     ],
     "binary": {
       "module_name": "loper-db-web-proxy",
-      "module_path": "./dist",
+      "module_path": "dist",
       "host": "https://github.com/ankoh/loper-db-web/releases/download/",
       "package_name": "{module_name}-v{version}-{node_abi}-{platform}-{arch}-{libc}.tar.gz",
       "remote_path": "v{version}"

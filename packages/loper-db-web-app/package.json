@@ -12,9 +12,6 @@
         "analyze:pwa:release": "webpack --config webpack.pwa.release.js --analyze",
         "lint": "eslint src"
     },
-    "engines": {
-        "node": ">=14.13"
-    },
     "dependencies": {
         "@ankoh/loper-db-web-shell": "link:../loper-db-web-shell",
         "apache-arrow": "^9.0.0",
