@@ -5,7 +5,7 @@ import path from 'path';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const base = configure({
-    buildDir: path.resolve(__dirname, './build/pwa/dev'),
+    buildDir: path.resolve(__dirname, './build/pwa/debug'),
     tsLoaderOptions: {
         compilerOptions: {
             configFile: './tsconfig.json',
@@ -34,7 +34,7 @@ export default {
         compress: true,
         port: 9002,
         static: {
-            directory: path.join(__dirname, './build/pwa/dev/static'),
+            directory: path.join(__dirname, './build/pwa/debug/static'),
         },
         headers: {
             'Access-Control-Allow-Origin': '*',

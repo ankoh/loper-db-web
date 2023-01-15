@@ -13,7 +13,7 @@
         "build:pwa:debug": "yarn workspace @ankoh/loper-db-web-app build:pwa:debug",
         "build:pwa:release": "yarn workspace @ankoh/loper-db-web-app build:pwa:release",
         "serve:pwa:debug": "yarn workspace @ankoh/loper-db-web-app start",
-        "serve:pwa:release": "python3 -m http.server 9003 --bind 127.0.0.1 --directory ./packages/loper-db-web-app/build/pwa/prod/",
+        "serve:pwa:release": "python3 -m http.server 9003 --bind 127.0.0.1 --directory ./packages/loper-db-web-app/build/pwa/release/",
         "lint": "yarn workspace @ankoh/loper-db-web-shell run lint",
         "all": "yarn run proto && yarn run build:shell:release && yarn run build:pwa:release",
         "postinstall": "node ./node_modules/wasm-pack/install.js"
