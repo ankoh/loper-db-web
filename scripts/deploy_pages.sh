@@ -19,17 +19,17 @@ git fetch origin gh-pages
 git reset --hard origin/gh-pages
 
 if [ "${CURRENT_BRANCH}" = "${DEFAULT_BRANCH}" ]; then
-    echo "[ RUN ] Install @ankoh/loper-web-app to ${PAGES_DIR}/"
+    echo "[ RUN ] Install @ankoh/loper-db-web-app to ${PAGES_DIR}/"
     find ${PAGES_DIR} \
         -mindepth 1 \
         -maxdepth 1 \
         -type d \
         -not -name CNAME \
         -exec rm -rf '{}' \;
-    cp -r ${PROJECT_ROOT}/packages/loper-web-app/build/pwa/prod/* ${PAGES_DIR}
+    cp -r ${PROJECT_ROOT}/packages/loper-db-web-app/build/pwa/prod/* ${PAGES_DIR}
 else
     TARGET_DIR="${PAGES_DIR}/branches/${CURRENT_BRANCH}"
-    echo "[ RUN ] Install @ankoh/loper-web-app to ${TARGET_DIR}/"
+    echo "[ RUN ] Install @ankoh/loper-db-web-app to ${TARGET_DIR}/"
     rm -rf ${TARGET_DIR}
     mkdir -p ${PAGES_DIR}/branches
     cp -r ${PROJECT_ROOT}/packages/loper-web-app/build/pwa/prod ${TARGET_DIR}
