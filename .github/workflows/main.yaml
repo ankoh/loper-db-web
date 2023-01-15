@@ -25,6 +25,9 @@ jobs:
     - name: Generate protobuf library
       run: buf generate --verbose
 
+    - name: Build loper-db-proto-es library
+      run: yarn workspace @ankoh/loper-db-proto-es build
+
     - name: Build loper-db-web-shell library
       run: yarn workspace @ankoh/loper-db-web-shell build:release
 
