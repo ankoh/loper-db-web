@@ -2,17 +2,36 @@
     "name": "@ankoh/loper-db-web-proxy",
     "version": "0.1.0",
     "description": "",
-    "main": "index.node",
+    "author": "André Kohn <andre.kohn@salesforce.com>",
+    "main": "./dist/index.node",
     "private": true,
     "scripts": {
-      "build": "cargo-cp-artifact -nc index.node -- cargo build --message-format=json-render-diagnostics -p loper-db-web-proxy",
+      "build": "cargo-cp-artifact -nc ./dist/index.node -- cargo build --message-format=json-render-diagnostics -p loper-db-web-proxy",
       "build:debug": "npm run build --",
       "build:release": "npm run build -- --release",
       "install": "npm run build:release",
       "test": "cargo test"
     },
-    "author": "",
+    "dependencies": {
+      "@mapbox/node-pre-gyp": "^1.0.8"
+    },
     "devDependencies": {
       "cargo-cp-artifact": "^0.1"
+    },
+    "os": [
+      "darwin",
+      "linux",
+      "win32"
+    ],
+    "cpu": [
+      "x64",
+      "arm64"
+    ],
+    "binary": {
+      "module_name": "loper-db-web-proxy",
+      "module_path": "./dist",
+      "host": "https://github.com/ankoh/loper-db-web/releases/download/",
+      "package_name": "{module_name}-v{version}-{node_abi}-{platform}-{arch}-{libc}.tar.gz",
+      "remote_path": "v{version}"
     }
 }
