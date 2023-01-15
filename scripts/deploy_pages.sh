@@ -26,13 +26,13 @@ if [ "${CURRENT_BRANCH}" = "${DEFAULT_BRANCH}" ]; then
         -type d \
         -not -name CNAME \
         -exec rm -rf '{}' \;
-    cp -r ${PROJECT_ROOT}/packages/loper-db-web-app/build/pwa/prod/* ${PAGES_DIR}
+    cp -r ${PROJECT_ROOT}/packages/loper-db-web-app/build/pwa/release/* ${PAGES_DIR}
 else
     TARGET_DIR="${PAGES_DIR}/branches/${CURRENT_BRANCH}"
     echo "[ RUN ] Install @ankoh/loper-db-web-app to ${TARGET_DIR}/"
     rm -rf ${TARGET_DIR}
     mkdir -p ${PAGES_DIR}/branches
-    cp -r ${PROJECT_ROOT}/packages/loper-web-app/build/pwa/prod ${TARGET_DIR}
+    cp -r ${PROJECT_ROOT}/packages/loper-web-app/build/pwa/release ${TARGET_DIR}
 fi
 
 git config user.name 'github-actions[bot]'

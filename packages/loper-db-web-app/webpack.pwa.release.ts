@@ -1,8 +1,5 @@
-import { configure } from './webpack.common.js';
-import { fileURLToPath } from 'url';
+import { configure } from './webpack.pwa.common';
 import path from 'path';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const base = configure({
     buildDir: path.resolve(__dirname, './build/pwa/release'),
