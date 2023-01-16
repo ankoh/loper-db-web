@@ -11,7 +11,7 @@ env:
 
 jobs:
 
-  web_app:
+  pwa:
     name: Web App
     runs-on: ubuntu-latest
     steps:
@@ -77,10 +77,10 @@ jobs:
             git fetch origin gh-pages
             ./scripts/deploy_pages.sh
 
-  native_app:
+  electron:
     name: Proxy node-${{ matrix.node_version }}-${{ matrix.system.target }}-${{ matrix.system.os }}
     runs-on: ${{ matrix.system.os }}
-    needs: web_app
+    needs: pwa
     strategy:
       fail-fast: false
       matrix:

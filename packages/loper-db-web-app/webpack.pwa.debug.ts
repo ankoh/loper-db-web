@@ -4,12 +4,10 @@ import path from 'path';
 const base = configure({
     buildDir: path.resolve(__dirname, './build/pwa/debug'),
     tsLoaderOptions: {
+        configFile: 'tsconfig.pwa.json',
         compilerOptions: {
-            configFile: './tsconfig.json',
             sourceMap: true,
-            target: "ES5",
-            module: "es2020",
-        },
+        }
     },
     extractCss: false,
     cssIdentifier: '[local]_[hash:base64]',
