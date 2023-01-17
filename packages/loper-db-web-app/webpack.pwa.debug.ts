@@ -2,6 +2,10 @@ import { configure } from './webpack.pwa.common';
 import path from 'path';
 
 const base = configure({
+    target: 'web',
+    entry: {
+        app: ['./src/app.tsx'],
+    },
     buildDir: path.resolve(__dirname, './build/pwa/debug'),
     tsLoaderOptions: {
         configFile: 'tsconfig.pwa.json',
@@ -15,9 +19,6 @@ const base = configure({
 
 export default {
     ...base,
-    output: {
-        ...base.output,
-    },
     mode: 'development',
     watchOptions: {
         ignored: ['node_modules/**', 'dist/**'],

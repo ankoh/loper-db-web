@@ -18,5 +18,5 @@
         "lib": ["es6", "es2020", "dom"]
     },
     "exclude": ["node_modules"],
-    "include": ["src/**/*", "test/**/*", "types/*.d.ts", "webpack.electron.common.ts", "webpack.electron.release.ts", "webpack.pwa.common.ts"]
+    "include": ["src/**/*", "test/**/*", "types/*.d.ts", "webpack.electron.common.ts", "webpack.electron.main.ts", "webpack.pwa.common.ts"]
 }

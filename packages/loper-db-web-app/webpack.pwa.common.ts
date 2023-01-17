@@ -1,13 +1,12 @@
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import path from 'path';
 
 export function configure(params: any) {
     return {
-        target: 'web',
-        entry: {
-            app: ['./src/app.tsx'],
-        },
+        target: params.target,
+        entry: params.entry,
         output: {
             path: params.buildDir,
             filename: 'static/js/[name].[contenthash].js',
@@ -128,6 +127,7 @@ export function configure(params: any) {
             },
         },
         plugins: [
+            new ForkTsCheckerWebpackPlugin(),
             new HtmlWebpackPlugin({
                 template: './static/index.html',
                 filename: './index.html',

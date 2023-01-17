@@ -1,10 +1,9 @@
 import { MakerSquirrel } from "@electron-forge/maker-squirrel";
 import { MakerZIP } from "@electron-forge/maker-zip";
-import { MakerDeb } from "@electron-forge/maker-deb";
 import { WebpackPlugin } from "@electron-forge/plugin-webpack";
 
-import mainConfig from "./webpack.electron.release";
-import rendererConfig from "./webpack.pwa.release";
+import mainConfig from "./webpack.electron.main";
+import rendererConfig from "./webpack.electron.renderer";
 
 export default {
     packagerConfig: {},
@@ -12,7 +11,6 @@ export default {
     makers: [
         new MakerSquirrel({}),
         new MakerZIP({}, ["darwin"]),
-        new MakerDeb({}),
     ],
     plugins: [
         new WebpackPlugin({
@@ -21,9 +19,9 @@ export default {
                 config: rendererConfig as any,
                 entryPoints: [
                 {
+                    name: "main_window",
                     html: "./static/index.html",
                     js: "./src/app.tsx",
-                    name: "main_window",
                     preload: {
                         js: "./src/electron/preload.ts",
                     },

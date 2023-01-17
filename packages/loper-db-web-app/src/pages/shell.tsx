@@ -6,7 +6,7 @@ import shell_wasm from '@ankoh/loper-db-web-shell/dist/shell_bg.wasm';
 
 import styles from './shell.module.css';
 
-const SHELL_FONT_FAMILY = 'Roboto Mono';
+const SHELL_FONT_FAMILY = 'RobotoMono';
 
 interface ShellProps {
     backgroundColor?: string;

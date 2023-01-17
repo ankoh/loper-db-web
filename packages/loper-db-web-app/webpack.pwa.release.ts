@@ -2,6 +2,10 @@ import { configure } from './webpack.pwa.common';
 import path from 'path';
 
 const base = configure({
+    target: 'web',
+    entry: {
+        app: ['./src/app.tsx'],
+    },
     buildDir: path.resolve(__dirname, './build/pwa/release'),
     tsLoaderOptions: {
         configFile: 'tsconfig.pwa.json',

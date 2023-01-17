@@ -1,8 +1,10 @@
 {
     "private": true,
-    "workspaces": [
-        "packages/*"
-    ],
+    "workspaces": {
+        "packages": [
+            "packages/*"
+        ]
+    },
     "scripts": {
         "install:wasmpack": "yarn workspace @ankoh/loper-db-web-shell install:wasmpack",
         "protoc": "buf generate",
@@ -12,12 +14,13 @@
         "build:shell:release": "yarn workspace @ankoh/loper-db-web-shell build:release",
         "build:pwa:debug": "yarn workspace @ankoh/loper-db-web-app build:pwa:debug",
         "build:pwa:release": "yarn workspace @ankoh/loper-db-web-app build:pwa:release",
-        "build:electron:release": "yarn workspace @ankoh/loper-db-web-app build:electron:release",
+        "electron:start": "yarn workspace @ankoh/loper-db-web-app electron:start",
+        "electron:pkg": "yarn workspace @ankoh/loper-db-web-app electron:pkg",
+        "electron:make": "yarn workspace @ankoh/loper-db-web-app electron:make",
         "serve:pwa:debug": "yarn workspace @ankoh/loper-db-web-app start",
         "serve:pwa:release": "python3 -m http.server 9003 --bind 127.0.0.1 --directory ./packages/loper-db-web-app/build/pwa/release/",
         "lint": "yarn workspace @ankoh/loper-db-web-shell run lint",
-        "all": "yarn run proto && yarn run build:shell:release && yarn run build:pwa:release",
-        "postinstall": "node ./node_modules/wasm-pack/install.js"
+        "all": "yarn run proto && yarn run build:shell:release && yarn run build:pwa:release"
     },
     "devDependencies": {
         "badge-maker": "^3.3.1",

@@ -57,7 +57,7 @@ export const NavBar: React.FC<Props> = (_props: Props) => {
     return (
         <div className={styles.navbar}>
             <div className={styles.logo}>
-                <svg height="28px" width="auto">
+                <svg height="28px" width="28px">
                     <use xlinkHref={`${icon_hyper}#sym`} />
                 </svg>
             </div>
