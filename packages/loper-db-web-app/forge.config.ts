@@ -17,16 +17,14 @@ export default {
             mainConfig: mainConfig as any,
             renderer: {
                 config: rendererConfig as any,
-                entryPoints: [
-                {
+                entryPoints: [{
                     name: "main_window",
                     html: "./static/index.html",
                     js: "./src/app.tsx",
                     preload: {
                         js: "./src/electron/preload.ts",
                     },
-                },
-                ],
+                }],
             },
         }),
     ],

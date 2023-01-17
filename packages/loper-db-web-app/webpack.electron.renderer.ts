@@ -1,4 +1,3 @@
-import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import path from 'path';
@@ -10,7 +9,6 @@ export default {
         chunkFilename: 'static/js/[name].[contenthash].js',
         assetModuleFilename: 'static/assets/[name].[contenthash][ext]',
         webassemblyModuleFilename: 'static/wasm/[hash].wasm',
-        clean: true,
     },
     resolve: {
         extensions: ['.ts', '.tsx', '.js', '.mjs', '.jsx', '.css', '.wasm'],
@@ -95,10 +93,6 @@ export default {
     },
     plugins: [
         new ForkTsCheckerWebpackPlugin(),
-        new HtmlWebpackPlugin({
-            template: './static/index.html',
-            filename: './index.html',
-        }),
         new MiniCssExtractPlugin({
             filename: './static/css/[id].[contenthash].css',
             chunkFilename: './static/css/[id].[contenthash].css',
