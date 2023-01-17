@@ -68,6 +68,13 @@ export default {
             },
         ],
     },
+    performance: {
+        assetFilter: (file: string) => {
+            return file.endsWith('.js');
+        },
+        maxEntrypointSize: 1000000,
+        maxAssetSize: 1000000,
+    },
     optimization: {
         usedExports: 'global',
         chunkIds: 'deterministic',
