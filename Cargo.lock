@@ -706,6 +706,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "loper-db-proto-rs"
+version = "0.1.0"
+dependencies = [
+ "tonic",
+ "tonic-build",
+]
+
+[[package]]
 name = "loper-db-web-extension"
 version = "0.1.0"
 dependencies = [

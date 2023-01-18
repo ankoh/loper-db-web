@@ -1,6 +1,7 @@
 [workspace]
 
 members = [
+    "packages/loper-db-proto-rs",
     "packages/loper-db-web-shell/crate",
     "packages/loper-db-web-extension",
 ]

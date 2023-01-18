@@ -1,0 +1,12 @@
+[package]
+name = "loper-db-proto-rs"
+version = "0.1.0"
+edition = "2021"
+
+workspace = "../../"
+
+[dependencies]
+tonic = "^0.8.3"
+
+[build-dependencies]
+tonic-build = "^0.8.3"
