@@ -1,13 +1,13 @@
 version: v1
 plugins:
   # Generate typescript protobuf library
-  - name: es
+  - name: Typescript Protobuf
+    path: ./node_modules/.bin/protoc-gen-es
     out: ./packages/loper-db-proto-es/gen
     opt: target=ts
-    path: ./node_modules/.bin/protoc-gen-es
 
   # Generate typescript gRPC library
-  - name: connect-web
+  - name: Typescript gRPC
+    path: ./node_modules/.bin/protoc-gen-connect-web
     out: ./packages/loper-db-proto-es/gen
     opt: target=ts
-    path: ./node_modules/.bin/protoc-gen-connect-web
