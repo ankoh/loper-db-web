@@ -35,38 +35,30 @@ impl LoperService {
         Ok(cx.undefined())
     }
     pub fn close_session(mut cx: FunctionContext) -> JsResult<JsUndefined> {
-        let _connection_id = cx.argument::<JsNumber>(0)?.value(&mut cx);
-        let _session_id = cx.argument::<JsNumber>(1)?.value(&mut cx);
-        let _on_success = cx.argument::<JsFunction>(2)?.root(&mut cx);
-        let _on_error = cx.argument::<JsFunction>(3)?.root(&mut cx);
+        let _session_id = cx.argument::<JsNumber>(0)?.value(&mut cx);
+        let _on_success = cx.argument::<JsFunction>(1)?.root(&mut cx);
+        let _on_error = cx.argument::<JsFunction>(2)?.root(&mut cx);
 
         Ok(cx.undefined())
     }
     pub fn execute_query(mut cx: FunctionContext) -> JsResult<JsUndefined> {
-        let _connection_id = cx.argument::<JsNumber>(0)?.value(&mut cx);
-        let _session_id = cx.argument::<JsNumber>(1)?.value(&mut cx);
-        let _on_success = cx.argument::<JsFunction>(2)?.root(&mut cx);
-        let _on_error = cx.argument::<JsFunction>(3)?.root(&mut cx);
+        let _session_id = cx.argument::<JsNumber>(0)?.value(&mut cx);
+        let _on_success = cx.argument::<JsFunction>(1)?.root(&mut cx);
+        let _on_error = cx.argument::<JsFunction>(2)?.root(&mut cx);
 
         Ok(cx.undefined())
     }
     pub fn read_query_result_stream(mut cx: FunctionContext) -> JsResult<JsUndefined> {
-        let _connection_id = cx.argument::<JsNumber>(0)?.value(&mut cx);
-        let _session_id = cx.argument::<JsNumber>(1)?.value(&mut cx);
-        let _session_id = cx.argument::<JsNumber>(2)?.value(&mut cx);
-        let _stream_id = cx.argument::<JsNumber>(3)?.value(&mut cx);
-        let _on_success = cx.argument::<JsFunction>(4)?.root(&mut cx);
-        let _on_error = cx.argument::<JsFunction>(5)?.root(&mut cx);
+        let _stream_id = cx.argument::<JsNumber>(0)?.value(&mut cx);
+        let _on_success = cx.argument::<JsFunction>(1)?.root(&mut cx);
+        let _on_error = cx.argument::<JsFunction>(2)?.root(&mut cx);
 
         Ok(cx.undefined())
     }
     pub fn close_query_result_stream(mut cx: FunctionContext) -> JsResult<JsUndefined> {
-        let _connection_id = cx.argument::<JsNumber>(0)?.value(&mut cx);
-        let _session_id = cx.argument::<JsNumber>(1)?.value(&mut cx);
-        let _session_id = cx.argument::<JsNumber>(2)?.value(&mut cx);
-        let _stream_id = cx.argument::<JsNumber>(3)?.value(&mut cx);
-        let _on_success = cx.argument::<JsFunction>(4)?.root(&mut cx);
-        let _on_error = cx.argument::<JsFunction>(5)?.root(&mut cx);
+        let _stream_id = cx.argument::<JsNumber>(0)?.value(&mut cx);
+        let _on_success = cx.argument::<JsFunction>(1)?.root(&mut cx);
+        let _on_error = cx.argument::<JsFunction>(2)?.root(&mut cx);
 
         Ok(cx.undefined())
     }
