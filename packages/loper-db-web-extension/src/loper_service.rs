@@ -43,37 +43,67 @@ impl LoperService {
     }
 
     fn configure(mut cx: FunctionContext) -> JsResult<JsUndefined> {
-        let _on_success = cx.argument::<JsFunction>(0)?.root(&mut cx);
-        let _on_error = cx.argument::<JsFunction>(1)?.root(&mut cx);
-        let _service_info = cx.empty_object();
+        let on_success = cx.argument::<JsFunction>(0)?.root(&mut cx);
+        let on_error = cx.argument::<JsFunction>(1)?.root(&mut cx);
+        let channel = cx.channel();
+        scheduler(&mut cx)?.spawn(catch_error(on_error, channel.clone(), async move {
+            // XXX Configure everything
 
+            // Send the result
+            channel.send(move |mut cx| {
+                let this = cx.undefined();
+                on_success.into_inner(&mut cx).call(&mut cx, this, vec![])?;
+                Ok(())
+            });
+            Ok(())
+        }));
         Ok(cx.undefined())
     }
     fn open_connection(mut cx: FunctionContext) -> JsResult<JsUndefined> {
-        let _on_success = cx.argument::<JsFunction>(0)?.root(&mut cx);
-        let _on_error = cx.argument::<JsFunction>(1)?.root(&mut cx);
+        let on_success = cx.argument::<JsFunction>(0)?.root(&mut cx);
+        let on_error = cx.argument::<JsFunction>(1)?.root(&mut cx);
+        let channel = cx.channel();
+        scheduler(&mut cx)?.spawn(catch_error(on_error, channel.clone(), async move {
+            // XXX Open the connection
 
-        let _connection_descriptor = cx.empty_object();
-
+            // Send the result
+            channel.send(move |mut cx| {
+                let this = cx.undefined();
+                on_success.into_inner(&mut cx).call(&mut cx, this, vec![])?;
+                Ok(())
+            });
+            Ok(())
+        }));
         Ok(cx.undefined())
     }
     fn close_connection(mut cx: FunctionContext) -> JsResult<JsUndefined> {
         let _connection_id = cx.argument::<JsNumber>(0)?.value(&mut cx);
-        let _on_success = cx.argument::<JsFunction>(1)?.root(&mut cx);
-        let _on_error = cx.argument::<JsFunction>(2)?.root(&mut cx);
+        let on_success = cx.argument::<JsFunction>(1)?.root(&mut cx);
+        let on_error = cx.argument::<JsFunction>(2)?.root(&mut cx);
+        let channel = cx.channel();
+        scheduler(&mut cx)?.spawn(catch_error(on_error, channel.clone(), async move {
+            // XXX Close the session
+
+            // Send the result
+            channel.send(move |mut cx| {
+                let this = cx.undefined();
+                on_success.into_inner(&mut cx).call(&mut cx, this, vec![])?;
+                Ok(())
+            });
+            Ok(())
+        }));
         Ok(cx.undefined())
     }
     fn create_session(mut cx: FunctionContext) -> JsResult<JsUndefined> {
         let _connection_id = cx.argument::<JsNumber>(0)?.value(&mut cx);
         let on_success = cx.argument::<JsFunction>(1)?.root(&mut cx);
         let on_error = cx.argument::<JsFunction>(2)?.root(&mut cx);
-
         let channel = cx.channel();
         scheduler(&mut cx)?.spawn(catch_error(on_error, channel.clone(), async move {
-            // TODO Allocate the session id
+            // XXX Allocate the session id
             let session_id = 42;
 
-            // Switch to the node main thread
+            // Send the result
             channel.send(move |mut cx| {
                 let descriptor = cx.empty_object();
                 let session_id = cx.number(session_id);
@@ -85,35 +115,79 @@ impl LoperService {
             });
             Ok(())
         }));
-
         Ok(cx.undefined())
     }
     fn close_session(mut cx: FunctionContext) -> JsResult<JsUndefined> {
         let _session_id = cx.argument::<JsNumber>(0)?.value(&mut cx);
-        let _on_success = cx.argument::<JsFunction>(1)?.root(&mut cx);
-        let _on_error = cx.argument::<JsFunction>(2)?.root(&mut cx);
+        let on_success = cx.argument::<JsFunction>(1)?.root(&mut cx);
+        let on_error = cx.argument::<JsFunction>(2)?.root(&mut cx);
+        let channel = cx.channel();
+        scheduler(&mut cx)?.spawn(catch_error(on_error, channel.clone(), async move {
+            // XXX Close the session
 
+            // Send the result
+            channel.send(move |mut cx| {
+                let this = cx.undefined();
+                on_success.into_inner(&mut cx).call(&mut cx, this, vec![])?;
+                Ok(())
+            });
+            Ok(())
+        }));
         Ok(cx.undefined())
     }
     fn execute_query(mut cx: FunctionContext) -> JsResult<JsUndefined> {
         let _session_id = cx.argument::<JsNumber>(0)?.value(&mut cx);
-        let _on_success = cx.argument::<JsFunction>(1)?.root(&mut cx);
-        let _on_error = cx.argument::<JsFunction>(2)?.root(&mut cx);
+        let _query_text = cx.argument::<JsString>(0)?.value(&mut cx);
+        let on_success = cx.argument::<JsFunction>(1)?.root(&mut cx);
+        let on_error = cx.argument::<JsFunction>(2)?.root(&mut cx);
+        let channel = cx.channel();
+        scheduler(&mut cx)?.spawn(catch_error(on_error, channel.clone(), async move {
+            // XXX Execute a query
 
+            // Send the result
+            channel.send(move |mut cx| {
+                let this = cx.undefined();
+                on_success.into_inner(&mut cx).call(&mut cx, this, vec![])?;
+                Ok(())
+            });
+            Ok(())
+        }));
         Ok(cx.undefined())
     }
     fn read_query_result_stream(mut cx: FunctionContext) -> JsResult<JsUndefined> {
         let _stream_id = cx.argument::<JsNumber>(0)?.value(&mut cx);
-        let _on_success = cx.argument::<JsFunction>(1)?.root(&mut cx);
-        let _on_error = cx.argument::<JsFunction>(2)?.root(&mut cx);
+        let on_success = cx.argument::<JsFunction>(1)?.root(&mut cx);
+        let on_error = cx.argument::<JsFunction>(2)?.root(&mut cx);
+        let channel = cx.channel();
+        scheduler(&mut cx)?.spawn(catch_error(on_error, channel.clone(), async move {
+            // XXX Read from the result stream
 
+            // Send the result
+            channel.send(move |mut cx| {
+                let this = cx.undefined();
+                on_success.into_inner(&mut cx).call(&mut cx, this, vec![])?;
+                Ok(())
+            });
+            Ok(())
+        }));
         Ok(cx.undefined())
     }
     fn close_query_result_stream(mut cx: FunctionContext) -> JsResult<JsUndefined> {
         let _stream_id = cx.argument::<JsNumber>(0)?.value(&mut cx);
-        let _on_success = cx.argument::<JsFunction>(1)?.root(&mut cx);
-        let _on_error = cx.argument::<JsFunction>(2)?.root(&mut cx);
+        let on_success = cx.argument::<JsFunction>(1)?.root(&mut cx);
+        let on_error = cx.argument::<JsFunction>(2)?.root(&mut cx);
+        let channel = cx.channel();
+        scheduler(&mut cx)?.spawn(catch_error(on_error, channel.clone(), async move {
+            // XXX Close the result stream
 
+            // Send the result
+            channel.send(move |mut cx| {
+                let this = cx.undefined();
+                on_success.into_inner(&mut cx).call(&mut cx, this, vec![])?;
+                Ok(())
+            });
+            Ok(())
+        }));
         Ok(cx.undefined())
     }
 }
