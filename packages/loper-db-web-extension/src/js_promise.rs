@@ -1,28 +1,35 @@
 use neon::prelude::*;
 use std::future::Future;
+
+use super::tokio_runtime::scheduler;
 use super::js_value::AsJsValue;
 
-pub async fn create_promise<'a, Body, Value>(on_success: neon::handle::Root<neon::types::JsFunction>, on_error: neon::handle::Root<neon::types::JsFunction>, channel: neon::event::Channel, f: Body)
+pub fn create_promise<'a, Body, Value>(mut cx: FunctionContext<'a>, f: Body) -> JsResult<'a, JsUndefined>
 where
     Value: AsJsValue + Send + 'static,
     Body: Future<Output = Result<Value, String>> + Send + 'static,
 {
-    match f.await {
-        Ok(value) => {
-            channel.send(move |mut cx| {
-                let args = vec![value.as_jsvalue(&mut cx)];
-                let this = cx.undefined();
-                on_success.into_inner(&mut cx).call(&mut cx, this, args)?;
-                Ok(())
-            });
-        },
-        Err(e) => {
-            channel.send(|mut cx| {
-                let args = vec![cx.string(e).upcast()];
-                let this = cx.undefined();
-                on_error.into_inner(&mut cx).call(&mut cx, this, args).unwrap();
-                Ok(())
-            });
-        }
-    }
+    let resolve = cx.argument::<JsFunction>(0)?.root(&mut cx);
+    let reject = cx.argument::<JsFunction>(1)?.root(&mut cx);
+    let channel = cx.channel();
+    scheduler(&mut cx)?.spawn(async move {
+        match f.await {
+            Ok(value) => {
+                channel.send(move |mut cx| {
+                    let args = vec![value.as_jsvalue(&mut cx)];
+                    let this = cx.undefined();
+                    resolve.into_inner(&mut cx).call(&mut cx, this, args)?;
+                    Ok(())
+                });
+            },
+            Err(e) => {
+                channel.send(|mut cx| {
+                    let args = vec![cx.string(e).upcast()];
+                    let this = cx.undefined();
+                    reject.into_inner(&mut cx).call(&mut cx, this, args).unwrap();
+                    Ok(())
+                });
+            }
+    }});
+    Ok(cx.undefined())
 }
