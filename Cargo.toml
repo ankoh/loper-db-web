@@ -2,7 +2,7 @@
 
 members = [
     "packages/loper-db-web-shell/crate",
-    "packages/loper-db-web-proxy",
+    "packages/loper-db-web-extension",
 ]
 
 [profile.release]

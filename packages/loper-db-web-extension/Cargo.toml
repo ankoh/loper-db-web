@@ -1,5 +1,5 @@
 [package]
-name = "loper-db-web-proxy"
+name = "loper-db-web-extension"
 version = "0.1.0"
 edition = "2021"
 exclude = ["index.node"]
