@@ -1,8 +1,33 @@
+use std::{collections::HashMap, cell::RefCell};
 use neon::prelude::*;
 
-struct LoperService {}
+struct LoperServiceConnection {}
+struct LoperServiceSession {}
+struct LoperServiceQueryRunner {}
+
+#[derive(Default)]
+struct LoperService {
+    connections: HashMap<usize, LoperServiceConnection>,
+    sessions: HashMap<usize, LoperServiceSession>,
+    queries: HashMap<usize, LoperServiceQueryRunner>,
+}
 
 impl LoperService {
+    /// We prevent leaking service state refs by returning mut refs here.
+    /// Users should resolve client state multiple times instead of introducing unnecessary state synchronization.
+    fn with_mut<F, R>(f: F) -> R
+    where
+        F: FnOnce(&mut LoperService) -> R,
+    {
+        thread_local! {
+            static SERVICE: RefCell<LoperService> = RefCell::new(LoperService::default());
+        }
+        SERVICE.with(|cell| {
+            let mut ref_guard = cell.borrow_mut();
+            f(&mut ref_guard)
+        })
+    }
+
     pub fn configure(mut cx: FunctionContext) -> JsResult<JsUndefined> {
         let _on_success = cx.argument::<JsFunction>(0)?.root(&mut cx);
         let _on_error = cx.argument::<JsFunction>(1)?.root(&mut cx);
