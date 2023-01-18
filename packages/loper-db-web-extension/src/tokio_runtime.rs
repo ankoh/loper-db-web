@@ -2,7 +2,7 @@ use tokio::runtime::Runtime;
 use neon::prelude::*;
 use once_cell::sync::OnceCell;
 
-pub fn runtime<'a, C: Context<'a>>(cx: &mut C) -> NeonResult<&'static Runtime> {
+pub fn scheduler<'a, C: Context<'a>>(cx: &mut C) -> NeonResult<&'static Runtime> {
     static RUNTIME: OnceCell<Runtime> = OnceCell::new();
     RUNTIME
         .get_or_try_init(|| Runtime::new())
