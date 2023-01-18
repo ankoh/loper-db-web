@@ -1,4 +1,4 @@
-use super::js_promise::create_promise;
+use super::js_promise::spawn_promise;
 use neon::prelude::*;
 use std::{cell::RefCell, collections::HashMap};
 
@@ -48,34 +48,34 @@ impl LoperService {
     }
 
     fn configure(cx: FunctionContext) -> JsResult<JsUndefined> {
-        create_promise(cx, async move {
+        spawn_promise(cx, async move {
             // XXX Configure everything
             Ok(())
         })
     }
     fn open_connection(cx: FunctionContext) -> JsResult<JsUndefined> {
-        create_promise(cx, async move {
+        spawn_promise(cx, async move {
             // XXX Open a connection
             Ok(())
         })
     }
     fn close_connection(mut cx: FunctionContext) -> JsResult<JsUndefined> {
         let _connection_id = cx.argument::<JsNumber>(2)?.value(&mut cx);
-        create_promise(cx, async move {
+        spawn_promise(cx, async move {
             // XXX Close a connection
             Ok(())
         })
     }
     fn create_session(mut cx: FunctionContext) -> JsResult<JsUndefined> {
         let _connection_id = cx.argument::<JsNumber>(2)?.value(&mut cx);
-        create_promise(cx, async move {
+        spawn_promise(cx, async move {
             // XXX Create a session
             Ok(())
         })
     }
     fn close_session(mut cx: FunctionContext) -> JsResult<JsUndefined> {
         let _session_id = cx.argument::<JsNumber>(2)?.value(&mut cx);
-        create_promise(cx, async move {
+        spawn_promise(cx, async move {
             // XXX Close the session
             Ok(())
         })
@@ -83,21 +83,21 @@ impl LoperService {
     fn execute_query(mut cx: FunctionContext) -> JsResult<JsUndefined> {
         let _session_id = cx.argument::<JsNumber>(2)?.value(&mut cx);
         let _query_text = cx.argument::<JsString>(3)?.value(&mut cx);
-        create_promise(cx, async move {
+        spawn_promise(cx, async move {
             // XXX Execute a query
             Ok(())
         })
     }
     fn read_query_result_stream(mut cx: FunctionContext) -> JsResult<JsUndefined> {
         let _stream_id = cx.argument::<JsNumber>(2)?.value(&mut cx);
-        create_promise(cx, async move {
+        spawn_promise(cx, async move {
             // XXX Read a query result stream
             Ok(())
         })
     }
     fn close_query_result_stream(mut cx: FunctionContext) -> JsResult<JsUndefined> {
         let _stream_id = cx.argument::<JsNumber>(2)?.value(&mut cx);
-        create_promise(cx, async move {
+        spawn_promise(cx, async move {
             // XXX Close a query result stream
             Ok(())
         })

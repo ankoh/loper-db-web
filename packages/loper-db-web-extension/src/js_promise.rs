@@ -4,7 +4,7 @@ use std::future::Future;
 use super::tokio_runtime::scheduler;
 use super::js_value::AsJsValue;
 
-pub fn create_promise<'a, Body, Value>(mut cx: FunctionContext<'a>, f: Body) -> JsResult<'a, JsUndefined>
+pub fn spawn_promise<'a, Body, Value>(mut cx: FunctionContext<'a>, f: Body) -> JsResult<'a, JsUndefined>
 where
     Value: AsJsValue + Send + 'static,
     Body: Future<Output = Result<Value, String>> + Send + 'static,
