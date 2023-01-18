@@ -709,6 +709,7 @@ dependencies = [
 name = "loper-db-proto-rs"
 version = "0.1.0"
 dependencies = [
+ "prost",
  "tonic",
  "tonic-build",
 ]
@@ -717,6 +718,7 @@ dependencies = [
 name = "loper-db-web-extension"
 version = "0.1.0"
 dependencies = [
+ "loper-db-proto-rs",
  "neon",
  "once_cell",
  "prost",

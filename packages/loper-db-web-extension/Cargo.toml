@@ -10,6 +10,7 @@ workspace = "../../"
 crate-type = ["cdylib"]
 
 [dependencies]
+loper-db-proto-rs = { path = "../loper-db-proto-rs" }
 tonic = "^0.8.3"
 prost = "^0.11.6"
 once_cell = "1.17.0"
