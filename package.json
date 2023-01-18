@@ -7,20 +7,26 @@
     },
     "scripts": {
         "install:wasmpack": "yarn workspace @ankoh/loper-db-web-shell install:wasmpack",
+
         "protoc": "buf generate",
         "proto": "buf generate && yarn workspace @ankoh/loper-db-proto-es build",
-        "build:ext:release": "yarn workspace @ankoh/loper-db-web-extension build:release",
-        "build:shell:debug": "yarn workspace @ankoh/loper-db-web-shell build:debug",
-        "build:shell:release": "yarn workspace @ankoh/loper-db-web-shell build:release",
-        "build:pwa:debug": "yarn workspace @ankoh/loper-db-web-app build:pwa:debug",
-        "build:pwa:release": "yarn workspace @ankoh/loper-db-web-app build:pwa:release",
+
+        "ext:build:release": "yarn workspace @ankoh/loper-db-web-extension build:release",
+
+        "shell:build:debug": "yarn workspace @ankoh/loper-db-web-shell build:debug",
+        "shell:build:release": "yarn workspace @ankoh/loper-db-web-shell build:release",
+
+        "pwa:build:debug": "yarn workspace @ankoh/loper-db-web-app pwa:build:debug",
+        "pwa:build:release": "yarn workspace @ankoh/loper-db-web-app pwa:build:release",
+        "pwa:start:debug": "yarn workspace @ankoh/loper-db-web-app start",
+        "pwa:start:release": "python3 -m http.server 9003 --bind 127.0.0.1 --directory ./packages/loper-db-web-app/build/pwa/release/",
+
         "electron:start": "yarn workspace @ankoh/loper-db-web-app electron:start",
         "electron:pkg": "yarn workspace @ankoh/loper-db-web-app electron:pkg",
         "electron:make": "yarn workspace @ankoh/loper-db-web-app electron:make",
-        "serve:pwa:debug": "yarn workspace @ankoh/loper-db-web-app start",
-        "serve:pwa:release": "python3 -m http.server 9003 --bind 127.0.0.1 --directory ./packages/loper-db-web-app/build/pwa/release/",
+
         "lint": "yarn workspace @ankoh/loper-db-web-shell run lint",
-        "all": "yarn run proto && yarn run build:shell:release && yarn run build:pwa:release"
+        "all": "yarn run proto && yarn run ext:build:release && yarn run shell:build:release && yarn run pwa:build:release"
     },
     "devDependencies": {
         "badge-maker": "^3.3.1",

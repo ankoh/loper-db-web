@@ -5,12 +5,12 @@
     "author": "André Kohn <andre.kohn@salesforce.com>",
     "private": true,
     "scripts": {
-        "start": "webpack serve --config webpack.pwa.debug.ts",
         "electron:start": "electron-forge start",
         "electron:pkg": "electron-forge package",
         "electron:make": "electron-forge make",
-        "build:pwa:debug": "webpack --config webpack.pwa.debug.ts",
-        "build:pwa:release": "webpack --config webpack.pwa.release.ts",
+        "pwa:start": "webpack serve --config webpack.pwa.debug.ts",
+        "pwa:build:debug": "webpack --config webpack.pwa.debug.ts",
+        "pwa:build:release": "webpack --config webpack.pwa.release.ts",
         "lint": "eslint src"
     },
     "main": "./.webpack/main",
