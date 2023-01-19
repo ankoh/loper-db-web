@@ -1,4 +1,5 @@
 use super::js_promise::spawn_promise;
+use loper_db_proto_rs::hyper_database_service_client::HyperDatabaseServiceClient;
 use neon::prelude::*;
 use std::{cell::RefCell, collections::HashMap};
 
@@ -53,8 +54,10 @@ impl LoperService {
             Ok(())
         })
     }
-    fn open_connection(cx: FunctionContext) -> JsResult<JsUndefined> {
+    fn open_connection(mut cx: FunctionContext) -> JsResult<JsUndefined> {
+        let url = cx.argument::<JsString>(2)?.value(&mut cx);
         spawn_promise(cx, async move {
+            let _client = HyperDatabaseServiceClient::connect(url).await.map_err(|e| e.to_string())?;
             // XXX Open a connection
             Ok(())
         })

@@ -77,8 +77,8 @@ jobs:
             git fetch origin gh-pages
             ./scripts/deploy_pages.sh
 
-  electron:
-    name: Proxy node-${{ matrix.node_version }}-${{ matrix.system.target }}-${{ matrix.system.os }}
+  extension:
+    name: Node Extension node-${{ matrix.node_version }}-${{ matrix.system.target }}-${{ matrix.system.os }}
     runs-on: ${{ matrix.system.os }}
     needs: pwa
     strategy:
