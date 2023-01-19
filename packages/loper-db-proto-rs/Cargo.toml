@@ -16,4 +16,4 @@ tonic-build = "^0.8.3"
 [features]
 grpc-client = ["tonic"]
 grpc-server = ["tonic"]
-default = ["grpc-client"]
+default = []

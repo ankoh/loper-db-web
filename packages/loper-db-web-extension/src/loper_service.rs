@@ -1,108 +1,46 @@
-use super::js_promise::spawn_promise;
 use loper_db_proto_rs::hyper_database_service_client::HyperDatabaseServiceClient;
-use neon::prelude::*;
-use std::{cell::RefCell, collections::HashMap};
+use std::{collections::HashMap, sync::Arc};
+use tokio::sync::Mutex;
+use once_cell::sync::OnceCell;
 
-pub fn export_functions(cx: &mut ModuleContext) -> NeonResult<()> {
-    cx.export_function("loper_configure", LoperService::configure)?;
-    cx.export_function("loper_open_connection", LoperService::open_connection)?;
-    cx.export_function("loper_close_connection", LoperService::close_connection)?;
-    cx.export_function("loper_create_session", LoperService::create_session)?;
-    cx.export_function("loper_close_session", LoperService::close_session)?;
-    cx.export_function("loper_execute_query", LoperService::execute_query)?;
-    cx.export_function(
-        "loper_read_query_result_stream",
-        LoperService::read_query_result_stream,
-    )?;
-    cx.export_function(
-        "loper_close_query_result_stream",
-        LoperService::close_query_result_stream,
-    )?;
-    Ok(())
-}
+type ConnectionId = u64;
+type SessionId = u64;
+type QueryId = u64;
 
 #[derive(Default)]
 struct LoperService {
-    _connections: HashMap<usize, LoperServiceConnection>,
-    _sessions: HashMap<usize, LoperServiceSession>,
-    _queries: HashMap<usize, LoperServiceQueryRunner>,
+    _connections: HashMap<ConnectionId, LoperServiceConnection>,
+    _next_connection_id: u64,
 }
 
-struct LoperServiceConnection {}
-struct LoperServiceSession {}
-struct LoperServiceQueryRunner {}
+struct LoperServiceConnection {
+    _connection_id: ConnectionId,
+    _client: HyperDatabaseServiceClient<tonic::transport::Channel>,
+    _sessions: HashMap<SessionId, LoperServiceSession>,
+    _next_session_id: u64,
+}
+
+struct LoperServiceSession {
+    _connection_id: ConnectionId,
+    _session_id: SessionId,
+    _client: HyperDatabaseServiceClient<tonic::transport::Channel>,
+    _queries: HashMap<QueryId, Arc<LoperServiceQuery>>,
+    _next_query_id: u64,
+}
+
+struct LoperServiceQuery {
+    _connection_id: ConnectionId,
+    _session_id: SessionId,
+    _query_id: QueryId,
+    // _result_stream: Mutex<tonic::codec::Streaming<loper_db_proto_rs::QueryResult>>,
+    _signal_reader_to_stop: tokio::sync::Notify,
+    _signal_reader_stopped: tokio::sync::Notify,
+    _result_channel: tokio::sync::mpsc::Receiver<Result<loper_db_proto_rs::QueryResult, String>>,
+}
 
 impl LoperService {
-    /// We prevent leaking service state refs by returning mut refs here.
-    /// Users should resolve client state multiple times instead of introducing unnecessary state synchronization.
-    fn _with_mut<F, R>(f: F) -> R
-    where
-        F: FnOnce(&mut LoperService) -> R,
-    {
-        thread_local! {
-            static SERVICE: RefCell<LoperService> = RefCell::new(LoperService::default());
-        }
-        SERVICE.with(|cell| {
-            let mut ref_guard = cell.borrow_mut();
-            f(&mut ref_guard)
-        })
-    }
-
-    fn configure(cx: FunctionContext) -> JsResult<JsUndefined> {
-        spawn_promise(cx, async move {
-            // XXX Configure everything
-            Ok(())
-        })
-    }
-    fn open_connection(mut cx: FunctionContext) -> JsResult<JsUndefined> {
-        let url = cx.argument::<JsString>(2)?.value(&mut cx);
-        spawn_promise(cx, async move {
-            let _client = HyperDatabaseServiceClient::connect(url).await.map_err(|e| e.to_string())?;
-            // XXX Open a connection
-            Ok(())
-        })
-    }
-    fn close_connection(mut cx: FunctionContext) -> JsResult<JsUndefined> {
-        let _connection_id = cx.argument::<JsNumber>(2)?.value(&mut cx);
-        spawn_promise(cx, async move {
-            // XXX Close a connection
-            Ok(())
-        })
-    }
-    fn create_session(mut cx: FunctionContext) -> JsResult<JsUndefined> {
-        let _connection_id = cx.argument::<JsNumber>(2)?.value(&mut cx);
-        spawn_promise(cx, async move {
-            // XXX Create a session
-            Ok(())
-        })
-    }
-    fn close_session(mut cx: FunctionContext) -> JsResult<JsUndefined> {
-        let _session_id = cx.argument::<JsNumber>(2)?.value(&mut cx);
-        spawn_promise(cx, async move {
-            // XXX Close the session
-            Ok(())
-        })
-    }
-    fn execute_query(mut cx: FunctionContext) -> JsResult<JsUndefined> {
-        let _session_id = cx.argument::<JsNumber>(2)?.value(&mut cx);
-        let _query_text = cx.argument::<JsString>(3)?.value(&mut cx);
-        spawn_promise(cx, async move {
-            // XXX Execute a query
-            Ok(())
-        })
-    }
-    fn read_query_result_stream(mut cx: FunctionContext) -> JsResult<JsUndefined> {
-        let _stream_id = cx.argument::<JsNumber>(2)?.value(&mut cx);
-        spawn_promise(cx, async move {
-            // XXX Read a query result stream
-            Ok(())
-        })
-    }
-    fn close_query_result_stream(mut cx: FunctionContext) -> JsResult<JsUndefined> {
-        let _stream_id = cx.argument::<JsNumber>(2)?.value(&mut cx);
-        spawn_promise(cx, async move {
-            // XXX Close a query result stream
-            Ok(())
-        })
+    pub async fn get() -> &'static Arc<Mutex<LoperService>> {
+        static SERVICE: OnceCell<Arc<Mutex<LoperService>>> = OnceCell::new();
+        SERVICE.get_or_init(|| Arc::new(Mutex::new(LoperService::default())))
     }
 }
