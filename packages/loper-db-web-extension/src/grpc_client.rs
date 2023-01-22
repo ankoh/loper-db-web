@@ -30,6 +30,11 @@ pub enum GrpcServerStreamEvent {
     Closed(Option<Status>),
 }
 
+pub struct GrpcServerStreamResponse {
+    _events: Vec<GrpcServerStreamEvent>,
+    _done: bool,
+}
+
 struct GrpcServerStream {
     receiver: mpsc::Receiver<GrpcServerStreamEvent>,
 }
@@ -191,7 +196,7 @@ impl GrpcClient {
     pub async fn read_server_stream(
         channel_id: SlotId,
         stream_id: SlotId,
-    ) -> Result<(Vec<GrpcServerStreamEvent>, bool), String> {
+    ) -> Result<GrpcServerStreamResponse, String> {
         // Resolve the stream
         let stream_mtx = {
             let mut client = GrpcClient::get().lock().await;
@@ -245,6 +250,6 @@ impl GrpcClient {
         }
 
         // Return events
-        return Ok((events, stream_done));
+        return Ok(GrpcServerStreamResponse { _events: events, _done: stream_done });
     }
 }
