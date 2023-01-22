@@ -1,24 +1,29 @@
-use loper_db_proto_rs::hyper_database_service_client::HyperDatabaseServiceClient;
+use loper_db_proto_rs::LOPER_RPC_PATH_EXECUTE_QUERY;
 use once_cell::sync::OnceCell;
+use prost::Message;
+use tonic::codegen::http::uri::PathAndQuery;
+use tonic::Request;
 use std::sync::Arc;
 use tokio::sync::mpsc;
 use tokio::sync::Mutex;
 
-type SlotId = usize;
-type QueryResultChunkResult = Result<Option<loper_db_proto_rs::QueryResult>, String>;
+use crate::grpc_codec::ByteCodec;
+
+pub type SlotId = usize;
+type QueryResultChunkResult = Result<Option<Vec<u8>>, String>;
 
 #[derive(Default)]
-struct LoperService {
+pub struct LoperService {
     connections: Vec<Option<LoperServiceConnection>>,
 }
 
 struct LoperServiceConnection {
-    client: HyperDatabaseServiceClient<tonic::transport::Channel>,
+    _channel: tonic::transport::Channel,
     sessions: Vec<Option<LoperServiceSession>>,
 }
 
 struct LoperServiceSession {
-    client: HyperDatabaseServiceClient<tonic::transport::Channel>,
+    raw_client: tonic::client::Grpc<tonic::transport::Channel>,
     queries: Vec<Option<Arc<Mutex<LoperServiceQuery>>>>,
 }
 
@@ -68,7 +73,7 @@ impl LoperService {
     }
 
     /// Execute a query
-    pub async fn execute_query(ci: SlotId, si: SlotId, text: String) -> Result<(), String> {
+    pub async fn execute_query(ci: SlotId, si: SlotId, text: String) -> Result<SlotId, String> {
         // Create a query object
         let (mut client, query_id, sender) = {
             let mut svc = LoperService::get().lock().await;
@@ -78,7 +83,7 @@ impl LoperService {
             let sess = conn.sessions[si]
                 .as_mut()
                 .ok_or_else(|| format!("failed to resolve session with id {}", si))?;
-            let client = sess.client.clone();
+            let client = sess.raw_client.clone();
             let (query_id, query_out) = alloc_slot(&mut sess.queries);
             let (query, sender) = LoperServiceQuery::create();
             query_out.replace(Arc::new(Mutex::new(query)));
@@ -87,15 +92,27 @@ impl LoperService {
 
         // Execute the query
         let mut result_stream = match {
+            // Create RPC request
             let query_param = loper_db_proto_rs::QueryParam {
                 query: text,
                 ..Default::default()
             };
-            let result_stream = client
-                .execute_query(query_param)
+            let request = Request::new(query_param.encode_to_vec());
+
+            // Wait until the server is ready
+            client.ready().await.map_err(|e| format!("Service was not ready: {}", e.to_string()))?;
+            // Create the raw byte codec that bypasses the protobuf deserialisation
+            let codec = ByteCodec::default();
+            // Create RPC path
+            let rpc_path = PathAndQuery::from_static(LOPER_RPC_PATH_EXECUTE_QUERY);
+            // Send the request
+            let response_stream = client
+                .server_streaming(request, rpc_path, codec)
                 .await
                 .map_err(|e| e.to_string())?;
-            Ok(result_stream.into_inner())
+            // Return the inner byte stream
+            // XXX Check response for redirect
+            Ok(response_stream.into_inner())
         } {
             Ok(s) => s,
             Err(e) => {
@@ -141,7 +158,7 @@ impl LoperService {
                 // Otherwise continue with next message
             }
         });
-        Ok::<(), String>(())
+        Ok(query_id)
     }
 
     /// Read from a query result stream
@@ -149,7 +166,7 @@ impl LoperService {
         ci: SlotId,
         si: SlotId,
         qi: SlotId,
-    ) -> Result<Vec<Option<loper_db_proto_rs::QueryResult>>, String> {
+    ) -> Result<Vec<Option<Vec<u8>>>, String> {
         // Resolve the query
         let query_mtx = {
             let mut svc = LoperService::get().lock().await;

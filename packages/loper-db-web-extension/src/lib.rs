@@ -1,5 +1,6 @@
 use neon::prelude::*;
 
+mod grpc_codec;
 mod tokio_runtime;
 mod loper_service;
 mod loper_service_api;
