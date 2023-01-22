@@ -10,6 +10,7 @@ workspace = "../../"
 crate-type = ["cdylib"]
 
 [dependencies]
+bytes = "1"
 loper-db-proto-rs = { path = "../loper-db-proto-rs", features = ["grpc-client"]  }
 tonic = "^0.8.3"
 prost = "^0.11.6"

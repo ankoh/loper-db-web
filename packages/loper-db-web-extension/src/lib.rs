@@ -1,14 +1,14 @@
 use neon::prelude::*;
 
+mod grpc_client;
+mod grpc_client_api;
 mod grpc_codec;
-mod tokio_runtime;
-mod loper_service;
-mod loper_service_api;
 mod js_promise;
 mod js_value;
+mod tokio_runtime;
 
 #[neon::main]
 fn main(mut cx: ModuleContext) -> NeonResult<()> {
-    loper_service_api::export_functions(&mut cx)?;
+    grpc_client_api::export_functions(&mut cx)?;
     Ok(())
 }

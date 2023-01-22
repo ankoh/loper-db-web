@@ -718,6 +718,7 @@ dependencies = [
 name = "loper-db-web-extension"
 version = "0.1.0"
 dependencies = [
+ "bytes",
  "loper-db-proto-rs",
  "neon",
  "once_cell",
