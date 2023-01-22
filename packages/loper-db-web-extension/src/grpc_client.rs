@@ -27,7 +27,7 @@ pub enum GrpcServerStreamEvent {
     StreamHeader(MetadataMap),
     StreamMessage(Vec<u8>),
     StreamTrailers(MetadataMap),
-    Closed(Option<Status>),
+    StreamClosed(Option<Status>),
 }
 
 pub struct GrpcServerStreamResponse {
@@ -162,16 +162,22 @@ impl GrpcClient {
                                     .send(GrpcServerStreamEvent::StreamTrailers(trailers))
                                     .await
                                     .ok();
-                                sender.send(GrpcServerStreamEvent::Closed(None)).await.ok();
+                                sender
+                                    .send(GrpcServerStreamEvent::StreamClosed(None))
+                                    .await
+                                    .ok();
                             }
                             // No trailers present, just send OK
                             Ok(None) => {
-                                sender.send(GrpcServerStreamEvent::Closed(None)).await.ok();
+                                sender
+                                    .send(GrpcServerStreamEvent::StreamClosed(None))
+                                    .await
+                                    .ok();
                             }
                             // Error while reading trailers, send as stream error
                             Err(e) => {
                                 sender
-                                    .send(GrpcServerStreamEvent::Closed(Some(e)))
+                                    .send(GrpcServerStreamEvent::StreamClosed(Some(e)))
                                     .await
                                     .ok();
                             }
@@ -181,7 +187,7 @@ impl GrpcClient {
                     // Received error, forward as stream error
                     Err(e) => {
                         sender
-                            .send(GrpcServerStreamEvent::Closed(Some(e)))
+                            .send(GrpcServerStreamEvent::StreamClosed(Some(e)))
                             .await
                             .ok();
                         break;
@@ -216,7 +222,7 @@ impl GrpcClient {
         while !stream_done {
             match stream.receiver.try_recv() {
                 Ok(event) => {
-                    if let GrpcServerStreamEvent::Closed(_) = &event {
+                    if let GrpcServerStreamEvent::StreamClosed(_) = &event {
                         stream_done = true;
                     }
                     events.push(event);
@@ -233,12 +239,12 @@ impl GrpcClient {
         if !stream_done && events.is_empty() {
             match stream.receiver.recv().await {
                 Some(event) => {
-                    if let GrpcServerStreamEvent::Closed(_) = &event {
+                    if let GrpcServerStreamEvent::StreamClosed(_) = &event {
                         stream_done = true;
                     }
                     events.push(event);
                 }
-                None => stream_done = true
+                None => stream_done = true,
             }
         }
 
@@ -250,6 +256,9 @@ impl GrpcClient {
         }
 
         // Return events
-        return Ok(GrpcServerStreamResponse { _events: events, _done: stream_done });
+        return Ok(GrpcServerStreamResponse {
+            _events: events,
+            _done: stream_done,
+        });
     }
 }
