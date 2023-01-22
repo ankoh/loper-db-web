@@ -1,53 +1,59 @@
 use loper_db_proto_rs::hyper_database_service_client::HyperDatabaseServiceClient;
 use once_cell::sync::OnceCell;
-use std::{collections::HashMap, sync::Arc};
+use std::sync::Arc;
 use tokio::sync::mpsc;
 use tokio::sync::Mutex;
 
-type ConnectionId = u64;
-type SessionId = u64;
-type QueryId = u64;
+type SlotId = usize;
 type QueryResultChunkResult = Result<Option<loper_db_proto_rs::QueryResult>, String>;
 
 #[derive(Default)]
 struct LoperService {
-    connections: HashMap<ConnectionId, LoperServiceConnection>,
-    _next_connection_id: u64,
+    connections: Vec<Option<LoperServiceConnection>>,
 }
 
 struct LoperServiceConnection {
-    _connection_id: ConnectionId,
-    _client: HyperDatabaseServiceClient<tonic::transport::Channel>,
-    sessions: HashMap<SessionId, LoperServiceSession>,
-    _next_session_id: u64,
+    client: HyperDatabaseServiceClient<tonic::transport::Channel>,
+    sessions: Vec<Option<LoperServiceSession>>,
 }
 
 struct LoperServiceSession {
-    _connection_id: ConnectionId,
-    _session_id: SessionId,
     client: HyperDatabaseServiceClient<tonic::transport::Channel>,
-    queries: HashMap<QueryId, Arc<Mutex<LoperServiceQuery>>>,
-    next_query_id: u64,
+    queries: Vec<Option<Arc<Mutex<LoperServiceQuery>>>>,
 }
 
 struct LoperServiceQuery {
-    connection_id: ConnectionId,
-    session_id: SessionId,
-    query_id: QueryId,
     result_channel: mpsc::Receiver<QueryResultChunkResult>,
 }
 
+/// Helper to allocate an element in a slot vector.
+/// We allocate slots in vectors to return small and efficient handles to the user.
+fn alloc_slot<'a, V>(elements: &'a mut Vec<Option<V>>) -> (SlotId, &'a mut Option<V>) {
+    for i in 0..elements.len() {
+        if elements[i].is_none() {
+            return (i, &mut elements[i]);
+        }
+    }
+    elements.push(None);
+    let id = elements.len() - 1;
+    return (id, &mut elements[id]);
+}
+
+/// Free the slot and
+fn free_slot<'a, V>(elements: &'a mut Vec<Option<V>>, id: SlotId) {
+    elements[id] = None;
+    if id == (elements.len() - 1) {
+        elements.pop();
+        while elements.last().is_none() {
+            elements.pop();
+        }
+    }
+}
+
 impl LoperServiceQuery {
-    fn create(
-        ci: ConnectionId,
-        si: SessionId,
-        qi: QueryId,
-    ) -> (Self, mpsc::Sender<QueryResultChunkResult>) {
+    fn create() -> (Self, mpsc::Sender<QueryResultChunkResult>) {
         let (sender, receiver) = mpsc::channel(10);
         let query = Self {
-            connection_id: ci,
-            session_id: si,
-            query_id: qi,
             result_channel: receiver,
         };
         (query, sender)
@@ -62,43 +68,47 @@ impl LoperService {
     }
 
     /// Execute a query
-    pub async fn execute_query(
-        ci: ConnectionId,
-        si: SessionId,
-        text: String,
-    ) -> Result<(), String> {
+    pub async fn execute_query(ci: SlotId, si: SlotId, text: String) -> Result<(), String> {
         // Create a query object
         let (mut client, query_id, sender) = {
             let mut svc = LoperService::get().lock().await;
-            let conn = svc
-                .connections
-                .get_mut(&ci)
+            let conn = svc.connections[ci]
+                .as_mut()
                 .ok_or_else(|| format!("failed to resolve connection with id {}", ci))?;
-            let mut sess = conn
-                .sessions
-                .get_mut(&si)
-                .ok_or_else(|| format!("failed ot resolve session with id {}", si))?;
+            let sess = conn.sessions[si]
+                .as_mut()
+                .ok_or_else(|| format!("failed to resolve session with id {}", si))?;
             let client = sess.client.clone();
-            let (query, sender) = LoperServiceQuery::create(ci, si, sess.next_query_id);
-            let query_id = query.query_id;
-            let query = Arc::new(Mutex::new(query));
-            sess.next_query_id += 1;
-            sess.queries.insert(query_id, query);
+            let (query_id, query_out) = alloc_slot(&mut sess.queries);
+            let (query, sender) = LoperServiceQuery::create();
+            query_out.replace(Arc::new(Mutex::new(query)));
             (client, query_id, sender)
         };
 
         // Execute the query
-        let query_param = loper_db_proto_rs::QueryParam {
-            query: text,
-            ..Default::default()
+        let mut result_stream = match {
+            let query_param = loper_db_proto_rs::QueryParam {
+                query: text,
+                ..Default::default()
+            };
+            let result_stream = client
+                .execute_query(query_param)
+                .await
+                .map_err(|e| e.to_string())?;
+            Ok(result_stream.into_inner())
+        } {
+            Ok(s) => s,
+            Err(e) => {
+                // The query execution failed, free the slot
+                let mut svc = LoperService::get().lock().await;
+                let conn = svc.connections[ci].as_mut().unwrap();
+                let sess = conn.sessions[si].as_mut().unwrap();
+                free_slot(&mut sess.queries, query_id);
+                return Err(e);
+            }
         };
-        let result_stream = client
-            .execute_query(query_param)
-            .await
-            .map_err(|e| e.to_string())?;
-        let mut result_stream = result_stream.into_inner();
 
-        // Spawn the reader
+        // Spawn the reader to poll the query result
         tokio::spawn(async move {
             loop {
                 // Read a message or cancel if the receiver was closed
@@ -131,36 +141,32 @@ impl LoperService {
                 // Otherwise continue with next message
             }
         });
-
-        Ok(())
+        Ok::<(), String>(())
     }
 
     /// Read from a query result stream
     pub async fn read_query_result_stream(
-        ci: ConnectionId,
-        si: SessionId,
-        qi: QueryId,
+        ci: SlotId,
+        si: SlotId,
+        qi: SlotId,
     ) -> Result<Vec<Option<loper_db_proto_rs::QueryResult>>, String> {
         // Resolve the query
         let query_mtx = {
-            let svc = LoperService::get().lock().await;
-            let conn = svc
-                .connections
-                .get(&ci)
+            let mut svc = LoperService::get().lock().await;
+            let conn = svc.connections[ci]
+                .as_mut()
                 .ok_or_else(|| format!("failed to resolve connection with id {}", ci))?;
-            let sess = conn
-                .sessions
-                .get(&si)
+            let sess = conn.sessions[si]
+                .as_mut()
                 .ok_or_else(|| format!("failed ot resolve session with id {}", si))?;
-            let query = sess
-                .queries
-                .get(&qi)
+            let query = sess.queries[qi]
+                .as_mut()
                 .ok_or_else(|| format!("failed to resolve query with id {}", qi))?;
             query.clone()
         };
         let mut query = query_mtx.lock().await;
 
-        // Fetch all results from the channel
+        // Fetch all buffered results from the channel without waiting
         let mut messages = Vec::new();
         loop {
             match query.result_channel.try_recv() {
