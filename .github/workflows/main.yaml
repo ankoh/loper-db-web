@@ -55,7 +55,9 @@ jobs:
           repo-token: ${{ github.token }}
 
       - name: Install npm dependencies
-        run: yarn install
+        run: |
+            yarn install
+            yarn run install:wasmpack
 
       - name: Generate protobuf files
         run: buf generate --verbose
@@ -134,7 +136,7 @@ jobs:
         with:
           repo-token: ${{ github.token }}
 
-      - name: Install node modules
+      - name: Install npm dependencies
         run: yarn install
 
       - name: Build loper-db-web-extension module
