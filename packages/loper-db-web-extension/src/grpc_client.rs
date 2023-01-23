@@ -52,7 +52,7 @@ fn alloc_slot<'a, V>(elements: &'a mut Vec<Option<V>>) -> (SlotId, &'a mut Optio
     return (id, &mut elements[id]);
 }
 
-/// Free the slot and
+/// Free the slot and shrink the vector (if possible)
 fn free_slot<'a, V>(elements: &'a mut Vec<Option<V>>, id: SlotId) {
     elements[id] = None;
     if id == (elements.len() - 1) {

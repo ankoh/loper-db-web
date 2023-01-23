@@ -1,10 +1,13 @@
 use neon::prelude::*;
 use std::future::Future;
 
-use super::tokio_runtime::scheduler;
 use super::js_value::AsJsValue;
+use super::tokio_runtime::scheduler;
 
-pub fn spawn_promise<'a, Body, Value>(mut cx: FunctionContext<'a>, f: Body) -> JsResult<'a, JsUndefined>
+pub fn spawn_promise<'a, Body, Value>(
+    mut cx: FunctionContext<'a>,
+    f: Body,
+) -> JsResult<'a, JsUndefined>
 where
     Value: AsJsValue + Send + 'static,
     Body: Future<Output = Result<Value, String>> + Send + 'static,
@@ -21,15 +24,19 @@ where
                     resolve.into_inner(&mut cx).call(&mut cx, this, args)?;
                     Ok(())
                 });
-            },
+            }
             Err(e) => {
                 channel.send(|mut cx| {
                     let args = vec![cx.string(e).upcast()];
                     let this = cx.undefined();
-                    reject.into_inner(&mut cx).call(&mut cx, this, args).unwrap();
+                    reject
+                        .into_inner(&mut cx)
+                        .call(&mut cx, this, args)
+                        .unwrap();
                     Ok(())
                 });
             }
-    }});
+        }
+    });
     Ok(cx.undefined())
 }

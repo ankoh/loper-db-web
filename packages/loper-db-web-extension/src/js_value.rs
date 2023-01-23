@@ -24,7 +24,10 @@ impl AsJsValue for Vec<u8> {
     }
 }
 
-impl<V> AsJsValue for Vec<V> where V: AsJsValue {
+impl<V> AsJsValue for Vec<V>
+where
+    V: AsJsValue,
+{
     fn as_jsvalue<'a, C: Context<'a>>(mut self, c: &mut C) -> Handle<'a, JsValue> {
         let array = JsArray::new(c, self.len() as u32);
         for (i, v) in self.drain(..).enumerate() {
@@ -35,7 +38,10 @@ impl<V> AsJsValue for Vec<V> where V: AsJsValue {
     }
 }
 
-impl<V> AsJsValue for Option<V> where V: AsJsValue {
+impl<V> AsJsValue for Option<V>
+where
+    V: AsJsValue,
+{
     fn as_jsvalue<'a, C: Context<'a>>(self, c: &mut C) -> Handle<'a, JsValue> {
         match self {
             Some(v) => v.as_jsvalue(c).upcast(),

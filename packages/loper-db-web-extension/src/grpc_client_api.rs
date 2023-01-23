@@ -59,7 +59,8 @@ fn grpc_read_server_stream(mut cx: FunctionContext) -> JsResult<JsUndefined> {
     let channel_id = cx.argument::<JsNumber>(2)?.value(&mut cx);
     let stream_id = cx.argument::<JsNumber>(3)?.value(&mut cx);
     spawn_promise(cx, async move {
-        let _response = GrpcClient::read_server_stream(channel_id as SlotId, stream_id as SlotId).await?;
+        let _response =
+            GrpcClient::read_server_stream(channel_id as SlotId, stream_id as SlotId).await?;
         Ok(())
     })
 }
