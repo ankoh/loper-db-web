@@ -1,4 +1,3 @@
-@import url(https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap);
 .EjwxHylAFWvFF5SjNC3S {
     position: relative;
     height: 100%;
@@ -174,6 +173,61 @@
 
 /* -------------------------------------------------------------------- */
 
+@font-face {
+    font-family: 'RobotoMono';
+    font-style: normal;
+    font-weight: 300;
+    src: url(../../static/assets/RobotoMono-Light.df831128177218a77ee7.ttf) format('truetype');
+}
+
+@font-face {
+    font-family: 'RobotoMono';
+    font-style: italic;
+    font-weight: 300;
+    src: url(../../static/assets/RobotoMono-LightItalic.b818d68db0beeaafd57e.ttf) format('truetype');
+}
+
+@font-face {
+    font-family: 'RobotoMono';
+    font-style: normal;
+    font-weight: 400;
+    src: url(../../static/assets/RobotoMono-Regular.418a8f9f65ccad0918af.ttf) format('truetype');
+}
+
+@font-face {
+    font-family: 'RobotoMono';
+    font-style: italic;
+    font-weight: 400;
+    src: url(../../static/assets/RobotoMono-Italic.f737da33109e58186a40.ttf) format('truetype');
+}
+
+@font-face {
+    font-family: 'RobotoMono';
+    font-style: normal;
+    font-weight: 500;
+    src: url(../../static/assets/RobotoMono-SemiBold.04a996641b468a3c10d7.ttf) format('truetype');
+}
+
+@font-face {
+    font-family: 'RobotoMono';
+    font-style: italic;
+    font-weight: 500;
+    src: url(../../static/assets/RobotoMono-SemiBoldItalic.1e73ca836628b398bb1c.ttf) format('truetype');
+}
+
+@font-face {
+    font-family: 'RobotoMono';
+    font-style: normal;
+    font-weight: 700;
+    src: url(../../static/assets/RobotoMono-Bold.1d29748c6ba7e786c050.ttf) format('truetype');
+}
+
+@font-face {
+    font-family: 'RobotoMono';
+    font-style: italic;
+    font-weight: 700;
+    src: url(../../static/assets/RobotoMono-BoldItalic.717b3e3d72f646ea285b.ttf) format('truetype');
+}
 :root {
     --border_radius: 0px;
     --border_color: rgb(220, 220, 220);
